@@ -1,0 +1,14 @@
+.form-message {
+  display: flex;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.message-input {
+  width: 90%;
+  margin-right: auto;
+  padding: 5px 10px;
+
+  border: 3px solid darken(#e9f7f6, 20%);
+  border-radius: 10px;
+}

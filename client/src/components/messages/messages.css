@@ -1,0 +1,10 @@
+.messages {
+  width: 76%;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-thumb {
+  background-color: #dcebea;
+}

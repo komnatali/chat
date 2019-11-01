@@ -1,0 +1,11 @@
+
+.chat {
+  width: 90%;
+  max-width: 1280px;
+  margin: 0 auto;
+}
+.messages-onlineusers {
+  display: flex;
+  justify-content: space-between;
+  height: 75vh;
+}

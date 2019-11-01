@@ -1,0 +1,17 @@
+.button {
+  padding: 5px 10px;
+  font-size: 1.1rem;
+  background-color: #b1e3df;
+  border-radius: 10px;
+  outline: none;
+  box-shadow: 2px 2px #dcebea;
+}
+
+.input {
+  width: 60%;
+  padding: 5px 10px;
+
+  border: 3px solid #dcebea;
+  border-radius: 10px;
+  outline: none;
+}

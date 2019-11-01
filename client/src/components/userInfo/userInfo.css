@@ -1,0 +1,27 @@
+.user-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 20px auto 15px;
+}
+.welcome-phrase {
+  font-size: 1.5rem;
+}
+.user-info {
+  display: flex;
+  align-items: center;
+}
+
+.username {
+  margin-right: 5px;
+  padding-bottom: 5px;
+
+  font-size: 1.5rem;
+}
+
+@media screen and (max-width: 420px) {
+  .username,
+  .welcome-phrase {
+    font-size: 1.1rem;
+  }
+}
