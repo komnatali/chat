@@ -40,6 +40,6 @@ io.on('connection', function(socket) {
   });
 });
 
-server.listen(5000, function() {
+server.listen(port, function() {
   console.log(`listening on *:${port}`);
 });
