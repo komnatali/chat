@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import io from 'socket.io-client';
 
@@ -6,64 +6,79 @@ import UserInfo from '../userInfo/userInfo';
 import MessageInput from '../messageInput/messageInput';
 import Messages from '../messages/messages';
 import OnlineUsers from '../onlineUsers/onlineUsers';
+import Video from '../video/video';
 
 import './chat.css';
 
-let socket;
+// let socket;
 
-const Chat = ({location, login, room}) => {
-  const [messages, setMessages] = useState([]);
-  const [users, setUsers] = useState('');
-  const endpoint = 'localhost:5000';
-  
-  useEffect(() => {
+class Chat extends React.Component {
+  constructor(props) {
+    super(props); 
+    this.state = {
+      messages: [],
+      users: null,
+      socket: null,
+    };
+
+    this.sendMessage = this.sendMessage.bind(this);
+    this.disconnect = this.disconnect.bind(this);
+  }
+
+  componentDidMount() {
+    const {login, room} = this.props;
+    // const endpoint = 'https://forasoft-chat.herokuapp.com/';
+    const endpoint = 'localhost:5000';
     const name = login;
 
-    socket = io(endpoint);
+    const socket = io(endpoint);
+    this.setState({socket});
     socket.emit('join chat', { name, room }, () => {} );
 
-    return () => {
-      socket.emit('disconnect');
 
-      socket.off();
-    }
-
-  }, [endpoint, location.search])
-
-  useEffect(() => {
     socket.on('message', (msg) => {
-      setMessages([...messages, msg]);
+      const {messages} = this.state;
+      this.setState({messages: [...messages, msg]});
     });
+
     socket.on('usersFromRoom', ( users ) => {
-      setUsers(users);  
+      
+      this.setState({users});
     })
+  }
 
-    return () => {
-      socket.emit('disconnect');
+  componentWillUnmount() {
+    const {socket} = this.state;
+    socket.emit('disconnect');
+    socket.off();
+  }
 
-      socket.off();
-    }
-  }, [messages, users])
 
-  const disconnect = () => {
+  disconnect = () => {
+    const {socket} = this.state;
     socket.disconnect();
     socket.off();
   }
 
-  const sendMessage = (message) => {
+  sendMessage = (message) => {
+    const {socket} = this.state;
     socket.emit('send message', message); 
   }
 
-  return (
-    <div className="chat">
-      <UserInfo disconnect={disconnect} />
-      <div className="messages-onlineusers">
-        <Messages messages={messages} />
-        <OnlineUsers users={users}/>
+  render() {
+    const {socket, users, messages} = this.state;
+    return (
+      <div className="chat">
+        <UserInfo disconnect={this.disconnect} />
+        <div className="messages-onlineusers">
+          <Messages messages={messages} />
+          <OnlineUsers users={users}/>
+        </div>
+        {socket && <Video socket={socket} users={users} /> }
+        <MessageInput sendMessage={this.sendMessage} />
       </div>
-      <MessageInput sendMessage={sendMessage} />
-    </div>
-  );
+    );
+  }
 }
  
 // export default Chat;
