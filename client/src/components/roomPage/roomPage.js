@@ -2,7 +2,6 @@ import React from 'react';
 import store from '../../store/store';
 import { changeRoom } from '../../store/actions/actions';
 import { Link } from 'react-router-dom';
-import './roomPage.css';
 
 class RoomPage extends React.Component {
   constructor(props) {
