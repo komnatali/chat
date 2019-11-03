@@ -31,7 +31,7 @@ class InputForm extends React.Component {
   render() {
     const { login } = this.props;
     const text = this.state.message;
-    const placeholder = login ? 'write your message' : 'Please, log in';
+    const placeholder = login ? 'Write your message' : 'Please, log in';
 
     return (
       <form className="form-message" onSubmit={this.onSubmit}>
@@ -40,13 +40,11 @@ class InputForm extends React.Component {
           value={text}
           placeholder={placeholder}
           onChange={this.onChangeMessage} />
-        <input type="submit" value="Submit" className="button"/>
+        <input type="submit" value="send" className="button"/>
       </form>
     );
   }
 }
-
-// export default InputForm;
 
 export default connect(state => ({
   login: state.login,

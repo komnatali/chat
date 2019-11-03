@@ -18,10 +18,3 @@
 
   font-size: 1.5rem;
 }
-
-@media screen and (max-width: 420px) {
-  .username,
-  .welcome-phrase {
-    font-size: 1.1rem;
-  }
-}

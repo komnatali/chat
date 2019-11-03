@@ -10,8 +10,6 @@ import Video from '../video/video';
 
 import './chat.css';
 
-// let socket;
-
 class Chat extends React.Component {
   constructor(props) {
     super(props); 
@@ -70,18 +68,19 @@ class Chat extends React.Component {
     return (
       <div className="chat">
         <UserInfo disconnect={this.disconnect} />
-        <div className="messages-onlineusers">
+        <div className="messages-sidebar">
           <Messages messages={messages} />
-          <OnlineUsers users={users}/>
+          <div className="sidebar">
+            <OnlineUsers users={users}/>
+            {socket && <Video socket={socket} users={users} /> }
+          </div>
         </div>
-        {socket && <Video socket={socket} users={users} /> }
         <MessageInput sendMessage={this.sendMessage} />
       </div>
     );
   }
 }
  
-// export default Chat;
 export default connect(state => ({
   login: state.login,
   room: state.room,

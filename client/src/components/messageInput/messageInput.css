@@ -9,6 +9,7 @@
   margin-right: auto;
   padding: 5px 10px;
 
-  border: 3px solid darken(#e9f7f6, 20%);
+  border: 3px solid #b1e3df;
   border-radius: 10px;
+  outline: none;;
 }

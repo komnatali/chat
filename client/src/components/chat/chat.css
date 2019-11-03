@@ -4,8 +4,18 @@
   max-width: 1280px;
   margin: 0 auto;
 }
-.messages-onlineusers {
+.messages-sidebar {
   display: flex;
   justify-content: space-between;
   height: 75vh;
+  padding: 10px;
+
+  background-color: #dcebea;
+  border: 3px solid #9edcd7;
+  border-radius: 10px;
+  box-shadow: 7px 7px rgba(0, 0, 0, 0.15);
+}
+
+.sidebar {
+  width: 20%;
 }

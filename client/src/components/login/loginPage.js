@@ -59,8 +59,7 @@ class LoginPage extends React.Component {
     );
   }
 }
- 
-// export default LoginPage;
+
 export default connect(state => ({
   room: state.room,
  }), null)(LoginPage);

@@ -1,4 +1,5 @@
 import React from 'react';
+import './video.css';
 
 class Video extends React.Component {
   constructor(props) {
@@ -7,6 +8,8 @@ class Video extends React.Component {
       localStream: null,
       onlineUsers: null,
       onlineUsersConnections: [],
+      isStreaming: false,
+      isOtherPeerStreaming: false,
     };
 
     this.videoRef = React.createRef();
@@ -18,7 +21,7 @@ class Video extends React.Component {
     const { socket } = this.props;
 
     socket.on('send offer', (offer) => {
-      console.log(offer);
+      this.setState({isOtherPeerStreaming: true});
       const pc = new RTCPeerConnection(null);
       const sessionDescr = new RTCSessionDescription(offer);
       pc.setRemoteDescription(sessionDescr);
@@ -26,7 +29,6 @@ class Video extends React.Component {
 
       socket.on('icecandidate', (candidate) => {
         pc.addIceCandidate(new RTCIceCandidate(candidate));
-        console.log(candidate);
       });
 
       pc.createAnswer()
@@ -46,22 +48,27 @@ class Video extends React.Component {
 
     socket.on('answer', (answer, calleeId) => {
       const { onlineUsersConnections, onlineUsers } = this.state;
-      // console.log(answer);
-      // console.log(onlineUsers);
-      // console.log(onlineUsersConnections);
       const pcWithCallee = onlineUsersConnections.find((connection) => connection.id === calleeId); //returns id of callee
-      // console.log(pcWithCallee);
       const remoteDescription = new RTCSessionDescription(answer);
       pcWithCallee.pc.setRemoteDescription(remoteDescription);
-      
-      // console.log(this.state.localStream);
     });
+
+    socket.on('stop streaming', () => {
+      this.setState({
+        localStream: null,
+        isOtherPeerStreaming: false,
+      });
+      const video = this.videoRef.current;      
+      video.srcObject = null;
+    })
 
 
   }
 
-  componentDidUpdate() {
-    this.videoRef.current.srcObject = this.state.localStream;
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    if (this.state.localStream === prevState.localStream) return;
+    const video = this.videoRef.current;
+    if (video) video.srcObject = this.state.localStream;
   }
 
   gotLocalMediaStream(mediaStream) {
@@ -99,7 +106,6 @@ class Video extends React.Component {
       tracks.forEach(track => pc.addTrack(track, localStream));
 
       pc.onnegotiationneeded = () => {
-        // console.log(1);
         pc.createOffer(offerOptions)
           .then((offer) => { return pc.setLocalDescription(offer)} )
           .then(() => { this.props.socket.emit('send offer', pc.localDescription, index); })
@@ -120,15 +126,38 @@ class Video extends React.Component {
     });
   }
 
+  stopAction() {
+    const { localStream } = this.state;
+    const trackList = localStream.getTracks();
+    trackList.forEach(track => track.stop());
+    
+    this.setState({
+      localStream: null,
+      onlineUsersConnections: [],
+    });
+    this.props.socket.emit('stop streaming');
+  }
+
   ControlVideo() {
-    this.startAction();
+    const { isStreaming } = this.state;
+    this.setState({isStreaming: !isStreaming});    
+
+    !isStreaming ?  this.startAction() : this.stopAction();
   }
   
   render() {
+    const { isStreaming } = this.state;
+    const buttonText = isStreaming ? 'Stop' : 'Stream';
     return (
       <div className="video-container">
-        <video autoPlay ref={this.videoRef}></video>
-        <button onClick={this.ControlVideo}>Stream</button>
+        <button
+          className="button"
+          onClick={this.ControlVideo}
+          disabled={this.state.isOtherPeerStreaming}
+        >
+          {buttonText}
+        </button>
+        <video className="video" autoPlay ref={this.videoRef}></video>
       </div>
     )  
   }

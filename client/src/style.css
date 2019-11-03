@@ -1,6 +1,8 @@
 .button {
   padding: 5px 10px;
+
   font-size: 1.1rem;
+
   background-color: #b1e3df;
   border-radius: 10px;
   outline: none;
@@ -14,4 +16,48 @@
   border: 3px solid #dcebea;
   border-radius: 10px;
   outline: none;
+}
+
+@media screen and (max-width: 700px) {
+  .messages-sidebar {
+    flex-direction: column;
+    height: 63vh;
+  }
+  .messages {
+    width: 100%;
+    height: 100%;
+  }
+  .sidebar {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    height: 30%;
+    margin: 0 auto;
+  }
+  .onlineusers {
+    width: 30%;
+    height: 100%;
+  }
+  .online-text,
+  .onlineuser {
+    font-size: 0.9rem;
+  }
+
+  .video-container {
+    flex-direction: row;
+    width: 70%;
+  }
+  .video {
+    width: auto;
+    height: 100%;
+  }
+}
+@media screen and (max-width: 465px) {
+  .login-page {
+    width: 270px;
+  }
+  .username,
+  .welcome-phrase {
+    font-size: 1.1rem;
+  }
 }

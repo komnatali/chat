@@ -29,7 +29,7 @@ class RoomPage extends React.Component {
   render() {
     return (
       <div className="login-page">
-        <span className="form-text">Create new room:</span>
+        <span className="form-text">Join the room:</span>
         <input
           className="input login-input"
           placeholder="Room title"
@@ -38,7 +38,7 @@ class RoomPage extends React.Component {
         />
         <Link to={`/chat?room=${this.state.roomValue}`}>
           <button className="button button-submit" type="submit" onClick={this.verifyRoomName}>
-            ROOM
+            Let's chat!
           </button>
         </Link>
       </div>

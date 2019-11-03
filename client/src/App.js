@@ -18,6 +18,3 @@ const App = () => {
 }
 
 export default App;
-// export default connect(state => ({
-//   login: state.login,
-//  }), null)(App);

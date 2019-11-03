@@ -65,10 +65,16 @@ io.on('connection', function(socket) {
   socket.on('answer', (answer) => {
     console.log('answer', answer.sdp.slice(0, 10));
     const calleeId = socket.id;
-    console.log(callerId);
 		io.sockets.sockets[callerId].emit('answer', answer, calleeId);
 	});
 
+  socket.on('stop streaming', () => {
+    const user = getUser(socket.id);
+    io.to(user.room).emit('stop streaming');
+    io.to(user.room).emit('message', {text: 'The end of stream!'});
+    const offers = [];
+    let callerId = null; 
+  })
 });
 
 server.listen(port, function() {

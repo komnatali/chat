@@ -16,7 +16,6 @@ const MainChat = ({location, login, room}) => {
   return <LoginPage />;
 }
 
-// export default MainChat;
 export default connect(state => ({
   login: state.login,
   room: state.room,
