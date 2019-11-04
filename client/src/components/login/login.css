@@ -31,7 +31,6 @@
   border-radius: 10px;
   outline: none;
 }
-
-.button-submit {
-  margin-top: 10px;
+.login-input {
+  margin-bottom: 10px;
 }

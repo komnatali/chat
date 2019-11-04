@@ -25,7 +25,9 @@ class RoomPage extends React.Component {
     store.dispatch(changeRoom(room));
   }
 
-  render() {
+  render() {    
+    const { roomValue } = this.state;
+
     return (
       <div className="login-page">
         <span className="form-text">Join the room:</span>
@@ -36,7 +38,12 @@ class RoomPage extends React.Component {
           onChange={this.onChangeRoom}
         />
         <Link to={`/chat?room=${this.state.roomValue}`}>
-          <button className="button button-submit" type="submit" onClick={this.verifyRoomName}>
+          <button
+            disabled={roomValue ? false : true}
+            className="button button-submit"
+            type="submit"
+            onClick={this.verifyRoomName}
+          >
             Let's chat!
           </button>
         </Link>

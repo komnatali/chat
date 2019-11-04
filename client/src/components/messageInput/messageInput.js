@@ -22,7 +22,7 @@ class InputForm extends React.Component {
   onSubmit(event){ 
     event.preventDefault();
     const { message } = this.state;
-    if(message) {
+    if (message) {
       this.props.sendMessage(message);
       this.setState({message: ''});
     }

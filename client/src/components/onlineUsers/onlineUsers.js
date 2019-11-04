@@ -10,6 +10,7 @@ const OnlineUsers = ({users}) => {
       )
     });
   } else usersList = "No online users";
+  
   return (
     <div className="onlineusers">
       <p className="online-text">Now online:</p>

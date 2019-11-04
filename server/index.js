@@ -1,9 +1,12 @@
 const http = require('http');
 const express = require('express');
 const socketio = require('socket.io');
+const cors = require('cors');
 const { addUser, removeUser, getUser, getUsersFromRoom } = require('./users.js');
 
 const app = express();
+app.use(cors())
+
 const server = http.createServer(app);
 const io = socketio(server);
 
@@ -40,6 +43,8 @@ io.on('connection', function(socket) {
     const user = removeUser(socket.id);    
     console.log(user);
     if (user) io.emit('usersFromRoom', getUsersFromRoom(user.room));
+    
+    io.to(user.room).emit('stop streaming');
   });
 
   socket.on('send offer', (offer, index) => {

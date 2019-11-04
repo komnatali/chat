@@ -5,9 +5,10 @@ import './message.css';
 
 const Message = ({message}) => {
   const { text, time, user } = message;
-
   const date = time ? DateTime.fromISO(time).toLocaleString(DateTime.DATETIME_MED) : null;
+
   const messageClasses = user ? 'message' : 'message join-message';
+
   let messageInfo;
   if (user) messageInfo = (
     <div className="message-info">

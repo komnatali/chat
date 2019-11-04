@@ -7,6 +7,7 @@ import './userInfo.css';
 class UserInfo extends React.Component {
   constructor(props){
     super(props);
+    
     this.logOut = this.logOut.bind(this);
   }
   

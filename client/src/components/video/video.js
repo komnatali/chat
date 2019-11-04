@@ -22,33 +22,30 @@ class Video extends React.Component {
 
     socket.on('send offer', (offer) => {
       this.setState({isOtherPeerStreaming: true});
+
       const pc = new RTCPeerConnection(null);
       const sessionDescr = new RTCSessionDescription(offer);
       pc.setRemoteDescription(sessionDescr);
-
 
       socket.on('icecandidate', (candidate) => {
         pc.addIceCandidate(new RTCIceCandidate(candidate));
       });
 
       pc.createAnswer()
-        .then((answer) => {
-          return pc.setLocalDescription(answer);
-        })
-        .then(() => {
-          socket.emit('answer', pc.localDescription);
-        })
+        .then((answer) => { return pc.setLocalDescription(answer) })
+        .then(() => { socket.emit('answer', pc.localDescription) });
 
-        pc.ontrack = (event) => {
-          const video = this.videoRef.current;      
-          video.srcObject = event.streams[0];
-        };
+      pc.ontrack = (event) => {
+        const video = this.videoRef.current;
+        if (video.srcObject) return;
+        video.srcObject = event.streams[0];
+        this.setState({localStream: event.streams[0]});
+      };
     });
 
-
     socket.on('answer', (answer, calleeId) => {
-      const { onlineUsersConnections, onlineUsers } = this.state;
-      const pcWithCallee = onlineUsersConnections.find((connection) => connection.id === calleeId); //returns id of callee
+      const { onlineUsersConnections } = this.state;
+      const pcWithCallee = onlineUsersConnections.find((connection) => connection.id === calleeId); //returns connection with callee
       const remoteDescription = new RTCSessionDescription(answer);
       pcWithCallee.pc.setRemoteDescription(remoteDescription);
     });
@@ -56,13 +53,12 @@ class Video extends React.Component {
     socket.on('stop streaming', () => {
       this.setState({
         localStream: null,
+        isStreaming: false,
         isOtherPeerStreaming: false,
       });
       const video = this.videoRef.current;      
       video.srcObject = null;
     })
-
-
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
@@ -72,11 +68,8 @@ class Video extends React.Component {
   }
 
   gotLocalMediaStream(mediaStream) {
-    const localVideo = this.videoRef.current;
-    localVideo.srcObject = mediaStream;
-    
     this.setState({localStream: mediaStream,});
-    this.call();
+    this.call(mediaStream);
   }
 
   // Creates local MediaStream
@@ -91,9 +84,9 @@ class Video extends React.Component {
     
   }
 
-  call() {
-    const { localStream } = this.state;
-    const tracks = localStream.getTracks();
+  call(mediaStream) {
+    const { socket } = this.props;
+    const tracks = mediaStream.getTracks();
     const offerOptions = {
       offerToReceiveAudio: true,
       offerToReceiveVideo: true,
@@ -103,16 +96,16 @@ class Video extends React.Component {
     const onlineUsers = this.props.users;
     onlineUsers.forEach((user, index) => {
       const pc = new RTCPeerConnection(null);
-      tracks.forEach(track => pc.addTrack(track, localStream));
+      tracks.forEach(track => pc.addTrack(track, mediaStream));
 
       pc.onnegotiationneeded = () => {
         pc.createOffer(offerOptions)
           .then((offer) => { return pc.setLocalDescription(offer)} )
-          .then(() => { this.props.socket.emit('send offer', pc.localDescription, index); })
+          .then(() => { socket.emit('send offer', pc.localDescription, index); })
       }
 
       pc.onicecandidate = (event) => {
-        if (event.candidate) this.props.socket.emit('icecandidate', event.candidate);
+        if (event.candidate) socket.emit('icecandidate', event.candidate);
       }
 
       const { onlineUsersConnections } = this.state;
@@ -128,13 +121,18 @@ class Video extends React.Component {
 
   stopAction() {
     const { localStream } = this.state;
+
+    if (!localStream) return;
+
     const trackList = localStream.getTracks();
     trackList.forEach(track => track.stop());
     
     this.setState({
       localStream: null,
       onlineUsersConnections: [],
+      isOtherPeerStreaming: false,
     });
+    
     this.props.socket.emit('stop streaming');
   }
 

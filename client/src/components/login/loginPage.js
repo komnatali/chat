@@ -22,17 +22,21 @@ class LoginPage extends React.Component {
     })
   }
 
-  verifyName(e) { 
+  verifyName(e) {
     const login = this.state.loginValue;
-    store.dispatch(changeLogin(login));
+    if (login) store.dispatch(changeLogin(login));
   }
 
   render() {
     const { room } = this.props;
+    const { loginValue } = this.state;
+    
+    /* render link to the "choose room" page if there is no room in the URL  */
     let submitBlock;
     if (!room) submitBlock = (
       <Link to={`/chooseRoom`}>
         <input
+          disabled={loginValue ? false : true}
           className="button button-submit"
           type="submit"
           value="Next step"
@@ -40,7 +44,12 @@ class LoginPage extends React.Component {
         />
       </Link>
     ); else submitBlock = (
-      <input className="button button-submit" type="submit" value="Let's chat!" onClick={this.verifyName}/>
+      <input
+        className="button"
+        disabled={loginValue ? false : true}
+        type="submit"
+        value="Let's chat!"
+        onClick={this.verifyName}/>
     );
 
     return (
@@ -48,13 +57,14 @@ class LoginPage extends React.Component {
         
         <span className="form-text">Please, choose nickname</span>
 
-          <input 
-            className="input login-input"
-            type="text"
-            value={this.state.loginValue}
-            placeholder="Your name"
-            onChange={this.onChangeLogin} />
-          {submitBlock}
+        <input 
+          className="input login-input"
+          type="text"
+          value={this.state.loginValue}
+          placeholder="Your name"
+          onChange={this.onChangeLogin} />
+
+        {submitBlock}
       </div>
     );
   }

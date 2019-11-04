@@ -25,22 +25,21 @@ class Chat extends React.Component {
 
   componentDidMount() {
     const {login, room} = this.props;
-    // const endpoint = 'https://forasoft-chat.herokuapp.com/';
-    const endpoint = 'localhost:5000';
+    const endpoint = 'https://forasoft-chat.herokuapp.com/';
+    // const endpoint = 'localhost:5000';
     const name = login;
 
     const socket = io(endpoint);
     this.setState({socket});
-    socket.emit('join chat', { name, room }, () => {} );
+    socket.emit('join chat', { name, room });
 
-
+    /* subscribe user to messages */
     socket.on('message', (msg) => {
       const {messages} = this.state;
       this.setState({messages: [...messages, msg]});
     });
 
     socket.on('usersFromRoom', ( users ) => {
-      
       this.setState({users});
     })
   }
