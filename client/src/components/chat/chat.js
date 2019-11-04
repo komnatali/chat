@@ -25,8 +25,8 @@ class Chat extends React.Component {
 
   componentDidMount() {
     const {login, room} = this.props;
-    const endpoint = 'https://forasoft-chat.herokuapp.com/';
-    // const endpoint = 'localhost:5000';
+    // const endpoint = 'https://forasoft-chat.herokuapp.com/';
+    const endpoint = 'localhost:5000';
     const name = login;
 
     const socket = io(endpoint);
